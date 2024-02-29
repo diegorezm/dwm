@@ -22,14 +22,34 @@ static char *colors[][3] = {
 /* tagging */
 static const char *tags[] = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
 
+typedef struct {
+  const char *name;
+  const void *cmd;
+} Sp;
+
+const char *spcmd1[] = {"alacritty", "--class", "spterm","-o", "window.dimensions = { columns = 100, lines = 20 }", NULL};
+const char *spcmd2[] = {"pcmanfm",NULL};
+const char *spcmd3[] = {"pavucontrol",NULL};
+static Sp scratchpads[] = {
+    /* name          cmd  */
+    {"spterm", spcmd1},
+    {"pcmanfm", spcmd2},
+    {"pavucontrol", spcmd3},
+};
+
 static const Rule rules[] = {
+
     /* xprop(1):
      *	WM_CLASS(STRING) = instance, class
      *	WM_NAME(STRING) = title
      */
     /* class      instance    title       tags mask     isfloating   monitor */
+
     {"Gimp", NULL, NULL, 0, 1, -1},
     {"Firefox", NULL, NULL, 1 << 8, 0, -1},
+    {NULL, "spterm", NULL, SPTAG(0), 1, -1},
+    {NULL, "pcmanfm", NULL, SPTAG(1), 1, -1},
+    {NULL, "pavucontrol", NULL, SPTAG(2), 0, -1},
 };
 
 /* layout(s) */
@@ -77,6 +97,9 @@ static const Key keys[] = {
     {MODKEY, XK_F2, spawn, SHCMD("$HOME/.local/bin/wallpapercl")},
     {MODKEY, XK_F3, spawn, SHCMD("$HOME/.local/bin/scripts/prjs.sh")},
     {MODKEY, XK_F5, xrdb, {.v = NULL}},
+    {MODKEY, XK_s, togglescratch, {.ui = 0}},
+    {MODKEY, XK_e, togglescratch, {.ui = 1}},
+    {MODKEY, XK_a, togglescratch, {.ui = 2}},
     // change gap size, i dont need this
     // { MODKEY,                      XK_minus,  setgaps,        {.i = -1 } },
     // { MODKEY,                       XK_equal,  setgaps,        {.i = +1 } },
