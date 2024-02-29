@@ -50,8 +50,7 @@ static const Rule rules[] = {
      *	WM_NAME(STRING) = title
      */
     /* class      instance    title       tags mask     isfloating   monitor */
-    {"Gimp", NULL, NULL, 0, 1, -1},
-    {"Firefox", NULL, NULL, 1 << 8, 0, -1},
+    {"discord", NULL, NULL, 1 << 8, 0, 1},
     {NULL, "spterm", NULL, SPTAG(0), 1, -1},
     {NULL, "pcmanfm", NULL, SPTAG(1), 1, -1},
     {NULL, "pavucontrol", NULL, SPTAG(2), 1, -1},
@@ -109,7 +108,7 @@ static const Key keys[] = {
     {MODKEY, XK_F10, spawn, SHCMD("pamixer -d 10 && pkill -RTMIN+10 dwmblocks")},
     {MODKEY, XK_F11, spawn, SHCMD("pamixer -i 10 && pkill -RTMIN+10 dwmblocks")},
     {MODKEY, XK_F5, xrdb, {.v = NULL}},
-    {MODKEY, XK_Print, spawn, SHCMD("$HOME/.local/bin/scripts/screenshot.sh")},
+    { NULL,XK_Print, spawn, SHCMD("$HOME/.local/bin/scripts/screenshot.sh")},
     {MODKEY, XK_s, togglescratch, {.ui = 0}},
     {MODKEY, XK_e, togglescratch, {.ui = 1}},
     {MODKEY, XK_a, togglescratch, {.ui = 2}},
