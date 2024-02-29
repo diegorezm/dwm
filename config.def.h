@@ -5,8 +5,7 @@ static const unsigned int snap = 32;    /* snap pixel */
 static const unsigned int gappx = 5;    /* gaps between windows */
 static const int showbar = 1;           /* 0 means no bar */
 static const int topbar = 1;            /* 0 means bottom bar */
-static const char *fonts[] = {"monospace:size=10"};
-static const char dmenufont[] = "monospace:size=10";
+static const char *fonts[] = {"JetBrains Mono:size=12"};
 static char normbgcolor[] = "#222222";
 static char normbordercolor[] = "#444444";
 static char normfgcolor[] = "#bbbbbb";
@@ -27,14 +26,21 @@ typedef struct {
   const void *cmd;
 } Sp;
 
-const char *spcmd1[] = {"alacritty", "--class", "spterm","-o", "window.dimensions = { columns = 100, lines = 20 }", NULL};
-const char *spcmd2[] = {"pcmanfm",NULL};
-const char *spcmd3[] = {"pavucontrol",NULL};
+const char *spcmd1[] = {"alacritty",
+                        "--class",
+                        "spterm",
+                        "-o",
+                        "window.dimensions = { columns = 100, lines = 20 }",
+                        NULL};
+const char *spcmd2[] = {"pcmanfm", NULL};
+const char *spcmd3[] = {"pavucontrol", NULL};
+const char *spcmd4[] = {"spotify-launcher", NULL};
 static Sp scratchpads[] = {
     /* name          cmd  */
     {"spterm", spcmd1},
     {"pcmanfm", spcmd2},
     {"pavucontrol", spcmd3},
+    {"spotify", spcmd4},
 };
 
 static const Rule rules[] = {
@@ -44,12 +50,12 @@ static const Rule rules[] = {
      *	WM_NAME(STRING) = title
      */
     /* class      instance    title       tags mask     isfloating   monitor */
-
     {"Gimp", NULL, NULL, 0, 1, -1},
     {"Firefox", NULL, NULL, 1 << 8, 0, -1},
     {NULL, "spterm", NULL, SPTAG(0), 1, -1},
     {NULL, "pcmanfm", NULL, SPTAG(1), 1, -1},
     {NULL, "pavucontrol", NULL, SPTAG(2), 0, -1},
+    {NULL, "spotify", NULL, SPTAG(3), 0, -1},
 };
 
 /* layout(s) */
@@ -88,6 +94,9 @@ static const char *dmenucmd[] = {"dmenu_run", "-p", "Run: ", NULL};
 static const char *termcmd[] = {"alacritty", NULL};
 static const char *browsercmd[] = {"firefox", NULL};
 
+static const char *nextsongcmd[] = {"playerctl", "-p", "spotify", "next",NULL};
+static const char *togglesong[] = {"playerctl", "-p", "spotify", "play-pause",NULL};
+
 static const Key keys[] = {
     /* modifier                     key        function        argument */
     {MODKEY, XK_d, spawn, {.v = dmenucmd}},
@@ -100,6 +109,9 @@ static const Key keys[] = {
     {MODKEY, XK_s, togglescratch, {.ui = 0}},
     {MODKEY, XK_e, togglescratch, {.ui = 1}},
     {MODKEY, XK_a, togglescratch, {.ui = 2}},
+    {MODKEY, XK_m, togglescratch, {.ui = 3}},
+    {MODKEY, XK_n, spawn, {.v = nextsongcmd}},
+    {MODKEY, XK_p, spawn, {.v = togglesong}},
     // change gap size, i dont need this
     // { MODKEY,                      XK_minus,  setgaps,        {.i = -1 } },
     // { MODKEY,                       XK_equal,  setgaps,        {.i = +1 } },
@@ -116,9 +128,9 @@ static const Key keys[] = {
     {MODKEY | ShiftMask, XK_Return, zoom, {0}},
     {MODKEY, XK_Tab, view, {0}},
     {MODKEY, XK_q, killclient, {0}},
-    {MODKEY, XK_t, setlayout, {.v = &layouts[0]}},
-    {MODKEY, XK_f, setlayout, {.v = &layouts[1]}},
-    {MODKEY, XK_m, setlayout, {.v = &layouts[2]}},
+    {MODKEY | ShiftMask, XK_t, setlayout, {.v = &layouts[0]}},
+    {MODKEY | ShiftMask, XK_f, setlayout, {.v = &layouts[1]}},
+    {MODKEY | ShiftMask, XK_m, setlayout, {.v = &layouts[2]}},
     {MODKEY, XK_space, setlayout, {0}},
     {MODKEY | ShiftMask, XK_space, togglefloating, {0}},
     {MODKEY, XK_0, view, {.ui = ~0}},
@@ -129,7 +141,7 @@ static const Key keys[] = {
     {MODKEY | ShiftMask, XK_period, tagmon, {.i = +1}},
     TAGKEYS(XK_1, 0) TAGKEYS(XK_2, 1) TAGKEYS(XK_3, 2) TAGKEYS(XK_4, 3)
         TAGKEYS(XK_5, 4) TAGKEYS(XK_6, 5) TAGKEYS(XK_7, 6) TAGKEYS(XK_8, 7)
-            TAGKEYS(XK_9, 8){MODKEY | ShiftMask, XK_q, quit, {0}},
+            TAGKEYS(XK_9, 8){MODKEY | ControlMask, XK_q, quit, {0}},
 };
 
 /* button definitions */
