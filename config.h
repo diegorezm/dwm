@@ -54,8 +54,8 @@ static const Rule rules[] = {
     {"Firefox", NULL, NULL, 1 << 8, 0, -1},
     {NULL, "spterm", NULL, SPTAG(0), 1, -1},
     {NULL, "pcmanfm", NULL, SPTAG(1), 1, -1},
-    {NULL, "pavucontrol", NULL, SPTAG(2), 0, -1},
-    {NULL, "spotify", NULL, SPTAG(3), 0, -1},
+    {NULL, "pavucontrol", NULL, SPTAG(2), 1, -1},
+    {NULL, "spotify", NULL, SPTAG(3), 1, -1},
 };
 
 /* layout(s) */
