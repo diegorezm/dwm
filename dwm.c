@@ -294,11 +294,12 @@ static void xrdb(const Arg *arg);
 static void zoom(const Arg *arg);
 
 /* variables */
-static const char autostartblocksh[] = "autostart_blocking.sh";
-static const char autostartsh[] = "autostart.sh";
 static const char broken[] = "broken";
 static const char dwmdir[] = "dwm";
+static const char autostartsh[] = "autostart.sh";
 static const char dwmconfigdir[] = ".config/";
+static char *termcmd[] = {NULL,NULL};
+static char *browsercmd[] = {NULL,NULL};
 static char stext[256];
 static int screen;
 static int sw, sh; /* X display screen geometry width, height */
@@ -1426,57 +1427,32 @@ void run(void) {
 }
 
 void runautostart(void) {
-  char *pathpfx;
+  char *pathpx;
   char *path;
-  char *home;
-  struct stat sb;
-  if ((home = getenv("HOME")) == NULL)
-    return;
-  pathpfx =
-      ecalloc(1, strlen(home) + strlen(dwmconfigdir) + strlen(dwmdir) + 3);
+  char *home = getenv("HOME");
 
-  if (sprintf(pathpfx, "%s/%s/%s", home, dwmconfigdir, dwmdir) < 0) {
-    free(pathpfx);
+  if(home == NULL){
     return;
   }
-  /* check if the autostart script directory exists */
-  if (!(stat(pathpfx, &sb) == 0 && S_ISDIR(sb.st_mode))) {
-    /* the XDG conformant path does not exist or is no directory
-     * so we try ~/.dwm instead
-     */
-    char *pathpfx_new = realloc(pathpfx, strlen(home) + strlen(dwmdir) + 3);
-    if (pathpfx_new == NULL) {
-      free(pathpfx);
-      return;
-    }
-    pathpfx = pathpfx_new;
 
-    if (sprintf(pathpfx, "%s/.%s", home, dwmdir) <= 0) {
-      free(pathpfx);
-      return;
-    }
+  pathpx = calloc(1, strlen(home) + strlen(dwmconfigdir) + strlen(dwmdir) + 3);
+  if(sprintf(pathpx, "%s/%s/%s", home, dwmconfigdir, dwmdir) <= 0 ) {
+    free(pathpx);
+    return;
   }
 
-  /* try the blocking script first */
-  path = ecalloc(1, strlen(pathpfx) + strlen(autostartblocksh) + 2);
-  if (sprintf(path, "%s/%s", pathpfx, autostartblocksh) <= 0) {
+  path = calloc(1, strlen(pathpx) + strlen(autostartsh) + 2);
+  if(sprintf(path, "%s/%s", pathpx, autostartsh) <= 0){
     free(path);
-    free(pathpfx);
+    free(pathpx);
+    return;
   }
 
-  if (access(path, X_OK) == 0)
+  if (access(path, X_OK) == 0){
     system(path);
-
-  /* now the non-blocking script */
-  if (sprintf(path, "%s/%s", pathpfx, autostartsh) <= 0) {
-    free(path);
-    free(pathpfx);
   }
 
-  if (access(path, X_OK) == 0)
-    system(strcat(path, " &"));
-
-  free(pathpfx);
+  free(pathpx);
   free(path);
 }
 
@@ -1616,7 +1592,6 @@ void setup(void) {
   XSetWindowAttributes wa;
   Atom utf8string;
   struct sigaction sa;
-
   /* do not transform children into zombies when they terminate */
   sigemptyset(&sa.sa_mask);
   sa.sa_flags = SA_NOCLDSTOP | SA_NOCLDWAIT | SA_RESTART;
@@ -1626,7 +1601,14 @@ void setup(void) {
   /* clean up any zombies (inherited from .xinitrc etc) immediately */
   while (waitpid(-1, NULL, WNOHANG) > 0)
     ;
-
+  termcmd[0] = getenv("TERMINAL");
+  browsercmd[0] = getenv("BROWSER");
+  if(termcmd[0] == NULL){
+    termcmd[0] = "st";
+  }
+  if(browsercmd[0] == NULL){
+    browsercmd[0] = "firefox";
+  }
   /* init screen */
   screen = DefaultScreen(dpy);
   sw = DisplayWidth(dpy, screen);
@@ -2218,6 +2200,7 @@ int main(int argc, char *argv[]) {
     die("pledge");
 #endif /* __OpenBSD__ */
   scan();
+  runautostart();
   run();
   cleanup();
   XCloseDisplay(dpy);

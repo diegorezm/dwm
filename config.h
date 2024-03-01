@@ -1,4 +1,6 @@
 /* See LICENSE file for copyright and license details. */
+#define TERMINAL_ENV
+#define BROWSER_ENV
 /* appearance */
 static const unsigned int borderpx = 2; /* border pixel of windows */
 static const unsigned int snap = 32;    /* snap pixel */
@@ -90,8 +92,8 @@ static const Layout layouts[] = {
 static char dmenumon[2] =
     "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = {"dmenu_run", "-p", "Run: ", NULL};
-static const char *termcmd[] = {"alacritty", NULL};
-static const char *browsercmd[] = {"firefox", NULL};
+// static const char *termcmd[] = {"alacritty", NULL};
+// static const char *browsercmd[] = {"firefox", NULL};
 
 static const char *nextsongcmd[] = {"playerctl", "-p", "spotify", "next",NULL};
 static const char *togglesong[] = {"playerctl", "-p", "spotify", "play-pause",NULL};
