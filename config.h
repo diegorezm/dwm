@@ -53,6 +53,7 @@ static const Rule rules[] = {
      */
     /* class      instance    title       tags mask     isfloating   monitor */
     {"discord", NULL, NULL, 1 << 8, 0, 1},
+    {"Sxiv", NULL, NULL, 0, 1, -1},
     {NULL, "spterm", NULL, SPTAG(0), 1, -1},
     {NULL, "pcmanfm", NULL, SPTAG(1), 1, -1},
     {NULL, "pavucontrol", NULL, SPTAG(2), 1, -1},
@@ -95,8 +96,9 @@ static const char *dmenucmd[] = {"dmenu_run", "-p", "Run: ", NULL};
 // static const char *termcmd[] = {"alacritty", NULL};
 // static const char *browsercmd[] = {"firefox", NULL};
 
-static const char *nextsongcmd[] = {"playerctl", "-p", "spotify", "next",NULL};
-static const char *togglesong[] = {"playerctl", "-p", "spotify", "play-pause",NULL};
+static const char *nextsongcmd[] = {"playerctl", "-p", "spotify", "next", NULL};
+static const char *togglesong[] = {"playerctl", "-p", "spotify", "play-pause",
+                                   NULL};
 
 static const Key keys[] = {
     /* modifier                     key        function        argument */
@@ -107,10 +109,12 @@ static const Key keys[] = {
     {MODKEY, XK_F2, spawn, SHCMD("$HOME/.local/bin/wallpapercl")},
     {MODKEY, XK_F3, spawn, SHCMD("$HOME/.local/bin/scripts/prjs.sh")},
     {MODKEY, XK_F4, spawn, SHCMD("$HOME/.local/bin/scripts/changeTheme")},
-    {MODKEY, XK_F10, spawn, SHCMD("pamixer -d 10 && pkill -RTMIN+10 dwmblocks")},
-    {MODKEY, XK_F11, spawn, SHCMD("pamixer -i 10 && pkill -RTMIN+10 dwmblocks")},
+    {MODKEY, XK_F10, spawn,
+     SHCMD("pamixer -d 10 && pkill -RTMIN+10 dwmblocks")},
+    {MODKEY, XK_F11, spawn,
+     SHCMD("pamixer -i 10 && pkill -RTMIN+10 dwmblocks")},
     {MODKEY, XK_F5, xrdb, {.v = NULL}},
-    { NULL,XK_Print, spawn, SHCMD("$HOME/.local/bin/scripts/screenshot.sh")},
+    {NULL, XK_Print, spawn, SHCMD("$HOME/.local/bin/scripts/screenshot.sh")},
     {MODKEY, XK_s, togglescratch, {.ui = 0}},
     {MODKEY, XK_e, togglescratch, {.ui = 1}},
     {MODKEY, XK_a, togglescratch, {.ui = 2}},
