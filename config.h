@@ -104,6 +104,7 @@ static const Key keys[] = {
     /* modifier                     key        function        argument */
     {MODKEY, XK_d, spawn, {.v = dmenucmd}},
     {MODKEY, XK_Return, spawn, {.v = termcmd}},
+    {MODKEY|ShiftMask, XK_Return, spawn, SHCMD("$TERMINAL -e yazi")},
     {MODKEY, XK_w, spawn, {.v = browsercmd}},
     {MODKEY, XK_F1, spawn, SHCMD("$HOME/.local/bin/scripts/power.sh")},
     {MODKEY, XK_F2, spawn, SHCMD("$HOME/.local/bin/wallpapercl")},
@@ -114,7 +115,7 @@ static const Key keys[] = {
     {MODKEY, XK_F11, spawn,
      SHCMD("pamixer -i 10 && pkill -RTMIN+10 dwmblocks")},
     {MODKEY, XK_F5, xrdb, {.v = NULL}},
-    {NULL, XK_Print, spawn, SHCMD("$HOME/.local/bin/scripts/screenshot.sh")},
+    {MODKEY, XK_Print, spawn, SHCMD("$HOME/.local/bin/scripts/screenshot.sh")},
     {MODKEY, XK_s, togglescratch, {.ui = 0}},
     {MODKEY, XK_e, togglescratch, {.ui = 1}},
     {MODKEY, XK_a, togglescratch, {.ui = 2}},
