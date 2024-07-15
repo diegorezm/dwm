@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -206,6 +207,7 @@ static void checkotherwm(void);
 static void cleanup(void);
 static void cleanupmon(Monitor *mon);
 static void clientmessage(XEvent *e);
+static void togglefullscr(const Arg *arg);
 static void configure(Client *c);
 static void configurenotify(XEvent *e);
 static void configurerequest(XEvent *e);
@@ -248,6 +250,7 @@ static void resizeclient(Client *c, int x, int y, int w, int h);
 static void resizemouse(const Arg *arg);
 static void restack(Monitor *m);
 static void run(void);
+static void runautostart(void);
 static void scan(void);
 static int sendevent(Client *c, Atom proto);
 static void sendmon(Client *c, Monitor *m);
@@ -293,6 +296,11 @@ static void zoom(const Arg *arg);
 
 /* variables */
 static const char broken[] = "broken";
+static const char dwmdir[] = "dwm";
+static const char autostartsh[] = "autostart.sh";
+static const char dwmconfigdir[] = ".config/";
+static char *termcmd[] = {NULL,NULL};
+static char *browsercmd[] = {NULL,NULL};
 static char stext[256];
 static int screen;
 static int sw, sh; /* X display screen geometry width, height */
@@ -1419,6 +1427,36 @@ void run(void) {
       handler[ev.type](&ev); /* call handler */
 }
 
+void runautostart(void) {
+  char *pathpx;
+  char *path;
+  char *home = getenv("HOME");
+
+  if(home == NULL){
+    return;
+  }
+
+  pathpx = calloc(1, strlen(home) + strlen(dwmconfigdir) + strlen(dwmdir) + 3);
+  if(sprintf(pathpx, "%s/%s/%s", home, dwmconfigdir, dwmdir) <= 0 ) {
+    free(pathpx);
+    return;
+  }
+
+  path = calloc(1, strlen(pathpx) + strlen(autostartsh) + 2);
+  if(sprintf(path, "%s/%s", pathpx, autostartsh) <= 0){
+    free(path);
+    free(pathpx);
+    return;
+  }
+
+  if (access(path, X_OK) == 0){
+    system(path);
+  }
+
+  free(pathpx);
+  free(path);
+}
+
 void scan(void) {
   unsigned int i, num;
   Window d1, d2, *wins = NULL;
@@ -1555,7 +1593,6 @@ void setup(void) {
   XSetWindowAttributes wa;
   Atom utf8string;
   struct sigaction sa;
-
   /* do not transform children into zombies when they terminate */
   sigemptyset(&sa.sa_mask);
   sa.sa_flags = SA_NOCLDSTOP | SA_NOCLDWAIT | SA_RESTART;
@@ -1565,7 +1602,14 @@ void setup(void) {
   /* clean up any zombies (inherited from .xinitrc etc) immediately */
   while (waitpid(-1, NULL, WNOHANG) > 0)
     ;
-
+  termcmd[0] = getenv("TERMINAL");
+  browsercmd[0] = getenv("BROWSER");
+  if(termcmd[0] == NULL){
+    termcmd[0] = "st";
+  }
+  if(browsercmd[0] == NULL){
+    browsercmd[0] = "firefox";
+  }
   /* init screen */
   screen = DefaultScreen(dpy);
   sw = DisplayWidth(dpy, screen);
@@ -1768,6 +1812,13 @@ void togglescratch(const Arg *arg) {
     selmon->tagset[selmon->seltags] |= scratchtag;
     spawn(&sparg);
   }
+}
+
+void
+togglefullscr(const Arg *arg)
+{
+  if(selmon->sel)
+    setfullscreen(selmon->sel, !selmon->sel->isfullscreen);
 }
 
 void toggletag(const Arg *arg) {
@@ -2157,6 +2208,7 @@ int main(int argc, char *argv[]) {
     die("pledge");
 #endif /* __OpenBSD__ */
   scan();
+  runautostart();
   run();
   cleanup();
   XCloseDisplay(dpy);
