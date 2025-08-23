@@ -210,6 +210,7 @@ static void configure(Client *c);
 static void configurenotify(XEvent *e);
 static void configurerequest(XEvent *e);
 static Monitor *createmon(void);
+static void togglefullscr(const Arg *arg);
 static void destroynotify(XEvent *e);
 static void detach(Client *c);
 static void detachstack(Client *c);
@@ -1703,6 +1704,12 @@ void togglescratch(const Arg *arg) {
     selmon->tagset[selmon->seltags] |= scratchtag;
     spawn(&sparg);
   }
+}
+
+void togglefullscr(const Arg *arg)
+{
+  if(selmon->sel)
+    setfullscreen(selmon->sel, !selmon->sel->isfullscreen);
 }
 
 void spawn(const Arg *arg) {

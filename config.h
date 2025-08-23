@@ -103,6 +103,7 @@ static char dmenumon[2] =
 static const char *dmenucmd[] = {"dmenu_run",    "-fn", dmenufont,   "-nb",
                                  normbgcolor,    "-nf", normfgcolor, "-sb",
                                  selbordercolor, "-sf", selfgcolor,  NULL};
+
 static const char *nextsongcmd[] = {"playerctl", "-p", "spotify", "next", NULL};
 static const char *toggleplayingcmd[] = {"playerctl", "-p", "spotify", "play-pause",
                                    NULL};
@@ -135,6 +136,7 @@ static const Key keys[] = {
     {MODKEY, XK_j, focusstack, {.i = +1}},
     {MODKEY, XK_k, focusstack, {.i = -1}},
 
+    { MODKEY|ShiftMask,             XK_f,      togglefullscr,  {0} },
     {MODKEY | ShiftMask, XK_i, incnmaster, {.i = +1}},
     {MODKEY | ShiftMask, XK_d, incnmaster, {.i = -1}},
 
