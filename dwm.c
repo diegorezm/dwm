@@ -295,6 +295,8 @@ static void zoom(const Arg *arg);
 static const char broken[] = "broken";
 static char stext[256];
 static int screen;
+static char *termcmd[] = {NULL,NULL};
+static char *browsercmd[] = {NULL,NULL};
 static int sw, sh; /* X display screen geometry width, height */
 static int bh;     /* bar height */
 static int lrpad;  /* sum of left and right padding for text */
@@ -1572,6 +1574,16 @@ void setup(void) {
   /* clean up any zombies (inherited from .xinitrc etc) immediately */
   while (waitpid(-1, NULL, WNOHANG) > 0)
     ;
+
+  /* Terminal and  Browser variables  */
+  termcmd[0] = getenv("TERMINAL");
+  browsercmd[0] = getenv("BROWSER");
+  if(termcmd[0] == NULL){
+    termcmd[0] = "kitty";
+  }
+  if(browsercmd[0] == NULL){
+    browsercmd[0] = "firefox";
+  }
 
   /* init screen */
   screen = DefaultScreen(dpy);

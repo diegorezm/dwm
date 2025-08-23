@@ -1,5 +1,8 @@
 /* See LICENSE file for copyright and license details. */
 
+#define TERMINAL_ENV
+#define BROWSER_ENV
+
 /* appearance */
 static const unsigned int borderpx = 1; /* border pixel of windows */
 static const unsigned int gappx = 3;    /* gaps between windows */
@@ -100,40 +103,77 @@ static char dmenumon[2] =
 static const char *dmenucmd[] = {"dmenu_run",    "-fn", dmenufont,   "-nb",
                                  normbgcolor,    "-nf", normfgcolor, "-sb",
                                  selbordercolor, "-sf", selfgcolor,  NULL};
-static const char *termcmd[] = {"st", NULL};
+static const char *nextsongcmd[] = {"playerctl", "-p", "spotify", "next", NULL};
+static const char *toggleplayingcmd[] = {"playerctl", "-p", "spotify", "play-pause",
+                                   NULL};
 
 static const Key keys[] = {
     /* modifier                     key        function        argument */
-    {MODKEY, XK_p, spawn, {.v = dmenucmd}},
-    {MODKEY | ShiftMask, XK_Return, spawn, {.v = termcmd}},
+
+    // SPAWNS
+    {MODKEY, XK_d, spawn, {.v = dmenucmd}},
+    {MODKEY, XK_Return, spawn, {.v = termcmd}},
+    {MODKEY, XK_Return, spawn, {.v = termcmd}},
+    {MODKEY, XK_w, spawn, {.v = browsercmd}},
+
+    // SHELL COMMANDS
+    {MODKEY, XK_F1, spawn, SHCMD("$HOME/.local/bin/scripts/power_ctl")},
+    {MODKEY, XK_F2, spawn, SHCMD("$TERMINAL -e $HOME/.local/bin/wallpapercl")},
+    {MODKEY, XK_F3, spawn, SHCMD("$HOME/.local/bin/scripts/screenshot")},
+    {MODKEY, XK_F4, spawn, SHCMD("$HOME/.local/bin/scripts/changeTheme")},
+    {MODKEY, XK_z, spawn, SHCMD("$HOME/.local/bin/scripts/dir_quick_search")},
+    {MODKEY, XK_c, spawn, SHCMD("$HOME/.local/bin/scripts/config_quick_search")},
+
+    // SONG
+    {MODKEY, XK_n, spawn, {.v = nextsongcmd}},
+    {MODKEY, XK_p, spawn, {.v = toggleplayingcmd}},
+
+    // TOGGLE TOP BAR
     {MODKEY, XK_b, togglebar, {0}},
+
+    // WINDOW UTILS
     {MODKEY, XK_j, focusstack, {.i = +1}},
     {MODKEY, XK_k, focusstack, {.i = -1}},
-    {MODKEY, XK_i, incnmaster, {.i = +1}},
-    {MODKEY, XK_d, incnmaster, {.i = -1}},
+
+    {MODKEY | ShiftMask, XK_i, incnmaster, {.i = +1}},
+    {MODKEY | ShiftMask, XK_d, incnmaster, {.i = -1}},
+
     {MODKEY, XK_h, setmfact, {.f = -0.05}},
     {MODKEY, XK_l, setmfact, {.f = +0.05}},
-    {MODKEY, XK_Return, zoom, {0}},
+    {MODKEY | ShiftMask, XK_Return, zoom, {0}},
     {MODKEY, XK_Tab, view, {0}},
-    {MODKEY | ShiftMask, XK_c, killclient, {0}},
+    {MODKEY, XK_q, killclient, {0}},
+
+    // LAYOUTS
     {MODKEY, XK_t, setlayout, {.v = &layouts[0]}},
     {MODKEY, XK_f, setlayout, {.v = &layouts[1]}},
     {MODKEY, XK_m, setlayout, {.v = &layouts[2]}},
     {MODKEY, XK_space, setlayout, {0}},
     {MODKEY | ShiftMask, XK_space, togglefloating, {0}},
+
+    // WORKSPACE UTILS
     {MODKEY, XK_0, view, {.ui = ~0}},
     {MODKEY | ShiftMask, XK_0, tag, {.ui = ~0}},
     {MODKEY, XK_comma, focusmon, {.i = -1}},
     {MODKEY, XK_period, focusmon, {.i = +1}},
     {MODKEY | ShiftMask, XK_comma, tagmon, {.i = -1}},
     {MODKEY | ShiftMask, XK_period, tagmon, {.i = +1}},
+
     // SCRATCHPADS
     {MODKEY, XK_s, togglescratch, {.ui = 0}},
     {MODKEY, XK_e, togglescratch, {.ui = 1}},
     {MODKEY, XK_a, togglescratch, {.ui = 2}},
     {MODKEY, XK_m, togglescratch, {.ui = 3}},
+
     // RELOAD XRDB
     {MODKEY, XK_F5, xrdb, {.v = NULL}},
+
+    // VOLUME KEYS
+   {MODKEY, XK_F10, spawn,
+     SHCMD("pamixer -d 10 && pkill -RTMIN+10 dwmblocks")},
+    {MODKEY, XK_F11, spawn,
+     SHCMD("pamixer -i 10 && pkill -RTMIN+10 dwmblocks")},
+
     // GAPS
     {MODKEY, XK_minus, setgaps, {.i = -1}},
     {MODKEY, XK_equal, setgaps, {.i = +1}},
