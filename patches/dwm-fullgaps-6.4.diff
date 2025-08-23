@@ -92,3 +92,4 @@ diff -up a/dwm.c b/dwm.c
 +				ty += HEIGHT(c) + m->gappx;
  		}
  }
+
