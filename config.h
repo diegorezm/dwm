@@ -5,7 +5,7 @@
 
 /* appearance */
 static const unsigned int borderpx = 1; /* border pixel of windows */
-static const unsigned int gappx = 3;    /* gaps between windows */
+static const unsigned int gappx = 4;    /* gaps between windows */
 static const unsigned int snap = 32;    /* snap pixel */
 static const int showbar = 1;           /* 0 means no bar */
 static const int topbar = 1;            /* 0 means bottom bar */
@@ -105,8 +105,8 @@ static const char *dmenucmd[] = {"dmenu_run",    "-fn", dmenufont,   "-nb",
                                  selbordercolor, "-sf", selfgcolor,  NULL};
 
 static const char *nextsongcmd[] = {"playerctl", "-p", "spotify", "next", NULL};
-static const char *toggleplayingcmd[] = {"playerctl", "-p", "spotify", "play-pause",
-                                   NULL};
+static const char *toggleplayingcmd[] = {"playerctl", "-p", "spotify",
+                                         "play-pause", NULL};
 
 static const Key keys[] = {
     /* modifier                     key        function        argument */
@@ -114,16 +114,16 @@ static const Key keys[] = {
     // SPAWNS
     {MODKEY, XK_d, spawn, {.v = dmenucmd}},
     {MODKEY, XK_Return, spawn, {.v = termcmd}},
-    {MODKEY, XK_Return, spawn, {.v = termcmd}},
     {MODKEY, XK_w, spawn, {.v = browsercmd}},
 
     // SHELL COMMANDS
     {MODKEY, XK_F1, spawn, SHCMD("$HOME/.local/bin/scripts/power_ctl")},
     {MODKEY, XK_F2, spawn, SHCMD("$TERMINAL -e $HOME/.local/bin/wallpapercl")},
-    {MODKEY, XK_F3, spawn, SHCMD("$HOME/.local/bin/scripts/screenshot")},
+    {0x0, XK_Print, spawn, SHCMD("$HOME/.local/bin/scripts/screenshot")},
     {MODKEY, XK_F4, spawn, SHCMD("$HOME/.local/bin/scripts/changeTheme")},
     {MODKEY, XK_z, spawn, SHCMD("$HOME/.local/bin/scripts/dir_quick_search")},
-    {MODKEY, XK_c, spawn, SHCMD("$HOME/.local/bin/scripts/config_quick_search")},
+    {MODKEY, XK_c, spawn,
+     SHCMD("$HOME/.local/bin/scripts/config_quick_search")},
 
     // SONG
     {MODKEY, XK_n, spawn, {.v = nextsongcmd}},
@@ -136,7 +136,7 @@ static const Key keys[] = {
     {MODKEY, XK_j, focusstack, {.i = +1}},
     {MODKEY, XK_k, focusstack, {.i = -1}},
 
-    { MODKEY|ShiftMask,             XK_f,      togglefullscr,  {0} },
+    {MODKEY | ShiftMask, XK_f, togglefullscr, {0}},
     {MODKEY | ShiftMask, XK_i, incnmaster, {.i = +1}},
     {MODKEY | ShiftMask, XK_d, incnmaster, {.i = -1}},
 
@@ -171,7 +171,7 @@ static const Key keys[] = {
     {MODKEY, XK_F5, xrdb, {.v = NULL}},
 
     // VOLUME KEYS
-   {MODKEY, XK_F10, spawn,
+    {MODKEY, XK_F10, spawn,
      SHCMD("pamixer -d 10 && pkill -RTMIN+10 dwmblocks")},
     {MODKEY, XK_F11, spawn,
      SHCMD("pamixer -i 10 && pkill -RTMIN+10 dwmblocks")},
