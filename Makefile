@@ -6,7 +6,7 @@ include config.mk
 SRC = drw.c dwm.c util.c
 OBJ = ${SRC:.c=.o}
 
-all: dwm
+all: clean dwm 
 
 .c.o:
 	${CC} -c ${CFLAGS} $<
