@@ -58,7 +58,7 @@ static const Rule rules[] = {
      */
     /* class      instance    title       tags mask     isfloating   monitor */
     {"discord", NULL, NULL, 1 << 8, 0, 1},
-    {"steam", NULL, NULL, 1 << 8, 0, 0},
+    {"steam", NULL, NULL, 1 << 7, 0, 1},
     {"Sxiv", NULL, NULL, 0, 1, -1},
     {NULL, "spterm", NULL, SPTAG(0), 1, -1},
     {NULL, "thunar", NULL, SPTAG(1), 1, -1},
@@ -118,9 +118,7 @@ static const Key keys[] = {
 
     // SHELL COMMANDS
     {MODKEY, XK_F1, spawn, SHCMD("$HOME/.local/bin/scripts/power_ctl")},
-    {MODKEY, XK_F2, spawn, SHCMD("$TERMINAL -e $HOME/.local/bin/wallpapercl")},
     {0x0, XK_Print, spawn, SHCMD("$HOME/.local/bin/scripts/screenshot")},
-    {MODKEY, XK_F4, spawn, SHCMD("$HOME/.local/bin/scripts/changeTheme")},
     {MODKEY, XK_z, spawn, SHCMD("$HOME/.local/bin/scripts/dir_quick_search")},
     {MODKEY, XK_c, spawn,
      SHCMD("$HOME/.local/bin/scripts/config_quick_search")},
@@ -149,7 +147,7 @@ static const Key keys[] = {
     // LAYOUTS
     {MODKEY, XK_t, setlayout, {.v = &layouts[0]}},
     {MODKEY, XK_f, setlayout, {.v = &layouts[1]}},
-    {MODKEY, XK_m, setlayout, {.v = &layouts[2]}},
+    // {MODKEY, XK_m, setlayout, {.v = &layouts[2]}},
     {MODKEY, XK_space, setlayout, {0}},
     {MODKEY | ShiftMask, XK_space, togglefloating, {0}},
 

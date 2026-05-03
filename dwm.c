@@ -26,6 +26,7 @@
 #include <X11/Xresource.h>
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
+#include <sys/stat.h>
 #include <X11/keysym.h>
 #include <errno.h>
 #include <locale.h>
@@ -249,6 +250,7 @@ static void resizeclient(Client *c, int x, int y, int w, int h);
 static void resizemouse(const Arg *arg);
 static void restack(Monitor *m);
 static void run(void);
+static void runautostart(void);
 static void scan(void);
 static int sendevent(Client *c, Atom proto);
 static void sendmon(Client *c, Monitor *m);
@@ -298,6 +300,10 @@ static char stext[256];
 static int screen;
 static char *termcmd[] = {NULL,NULL};
 static char *browsercmd[] = {NULL,NULL};
+static const char autostartblocksh[] = "autostart_blocking.sh";
+static const char autostartsh[] = "autostart.sh";
+static const char dwmdir[] = ".config/dwm";
+static const char localshare[] = ".local/share";
 static int sw, sh; /* X display screen geometry width, height */
 static int bh;     /* bar height */
 static int lrpad;  /* sum of left and right padding for text */
@@ -1421,6 +1427,28 @@ void run(void) {
       handler[ev.type](&ev); /* call handler */
 }
 
+
+void runautostart(void)
+{
+	char *home = getenv("HOME");
+	if (!home)
+		return;
+
+	char path[PATH_MAX];
+
+	/* blocking script: ~/.config/dwm/autostart_blocking.sh */
+	snprintf(path, sizeof(path), "%s/.config/dwm/autostart_blocking.sh", home);
+	if (access(path, X_OK) == 0)
+		system(path);
+
+	/* non-blocking script: ~/.config/dwm/autostart.sh */
+	snprintf(path, sizeof(path), "%s/.config/dwm/autostart.sh", home);
+	if (access(path, X_OK) == 0) {
+		strcat(path, " &");
+		system(path);
+	}
+}
+
 void scan(void) {
   unsigned int i, num;
   Window d1, d2, *wins = NULL;
@@ -2174,6 +2202,7 @@ int main(int argc, char *argv[]) {
     die("pledge");
 #endif /* __OpenBSD__ */
   scan();
+  runautostart();
   run();
   cleanup();
   XCloseDisplay(dpy);
