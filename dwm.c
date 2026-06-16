@@ -304,7 +304,6 @@ static char *browsercmd[] = {NULL,NULL};
 static const char autostartblocksh[] = "autostart_blocking.sh";
 static const char autostartsh[] = "autostart.sh";
 static const char dwmdir[] = ".config/dwm";
-static const char localshare[] = ".local/share";
 static int sw, sh; /* X display screen geometry width, height */
 static int bh;     /* bar height */
 static int lrpad;  /* sum of left and right padding for text */
@@ -1436,12 +1435,12 @@ void runautostart(void)
 	char path[PATH_MAX];
 
 	/* blocking script: ~/.config/dwm/autostart_blocking.sh */
-	snprintf(path, sizeof(path), "%s/.config/dwm/autostart_blocking.sh", home);
+	snprintf(path, sizeof(path), "%s/%s/%s", home, dwmdir, autostartblocksh);
 	if (access(path, X_OK) == 0)
 		system(path);
 
 	/* non-blocking script: ~/.config/dwm/autostart.sh */
-	snprintf(path, sizeof(path), "%s/.config/dwm/autostart.sh", home);
+	snprintf(path, sizeof(path), "%s/%s/%s", home, dwmdir, autostartsh);
 	if (access(path, X_OK) == 0) {
 		strcat(path, " &");
 		system(path);
