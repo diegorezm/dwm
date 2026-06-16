@@ -28,14 +28,19 @@ typedef struct {
   const void *cmd;
 } Sp;
 
-const char *spcmd1[] = {"st",
-                        "-n",
-                        "spterm",
-                        "-g",
-                        "120x34",
-                        "-f",
-                        "JetBrainsMono:size=13:antialias=true:autohint=true",
-                        NULL};
+const char *spcmd1[] = {
+    "alacritty",
+    "--class",
+    "spterm,spterm",
+    "--option",
+    "window.dimensions.columns=120",
+    "--option",
+    "window.dimensions.lines=34",
+    "--option",
+    "font.size=13",
+    NULL
+};
+
 const char *spcmd2[] = {"thunar", NULL};
 const char *spcmd3[] = {"pavucontrol", NULL};
 const char *spcmd4[] = {"spotify-launcher", NULL};
