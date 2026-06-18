@@ -1,5 +1,9 @@
---- dwm.c
-+++ dwm.c
+:100644 100644 f1d86b2 0000000 M	dwm.c
+
+diff --git a/dwm.c b/dwm.c
+index f1d86b2..d41cc14 100644
+--- a/dwm.c
++++ b/dwm.c
 @@ -433,9 +433,15 @@ buttonpress(XEvent *e)
  	}
  	if (ev->window == selmon->barwin) {
