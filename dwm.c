@@ -113,7 +113,6 @@ enum {
   ClkTagBar,
   ClkLtSymbol,
   ClkStatusText,
-  ClkWinTitle,
   ClkClientWin,
   ClkRootWin,
   ClkLast
@@ -511,7 +510,7 @@ void buttonpress(XEvent *e) {
     else if (ev->x > selmon->ww - (int)TEXTW(stext))
       click = ClkStatusText;
     else
-      click = ClkWinTitle;
+	  click = ClkStatusText;
   } else if ((c = wintoclient(ev->window))) {
     focus(c);
     restack(selmon);
@@ -790,15 +789,20 @@ void drawbar(Monitor *m) {
 
   if ((w = m->ww - tw - x) > bh) {
     if (m->sel) {
-      drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
-      drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
-      if (m->sel->isfloating)
-        drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
+            /* fix overflow when window name is bigger than window width */
+			int mid = (m->ww - (int)TEXTW(m->sel->name)) / 2 - x;
+			/* make sure name will not overlap on tags even when it is very long */
+			mid = mid >= lrpad / 2 ? mid : lrpad / 2;
+ 	//		drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
+			drw_text(drw, x, 0, w, bh, mid, m->sel->name, 0);
+ 			if (m->sel->isfloating)
+ 				drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
     } else {
-      drw_setscheme(drw, scheme[SchemeNorm]);
-      drw_rect(drw, x, 0, w, bh, 1, 1);
+        drw_setscheme(drw, scheme[SchemeNorm]);
+        drw_rect(drw, x, 0, w, bh, 1, 1);
     }
   }
+
   drw_map(drw, m->barwin, 0, 0, m->ww, bh);
 }
 
@@ -1296,11 +1300,8 @@ void propertynotify(XEvent *e) {
       drawbars();
       break;
     }
-    if (ev->atom == XA_WM_NAME || ev->atom == netatom[NetWMName]) {
+	if (ev->atom == XA_WM_NAME || ev->atom == netatom[NetWMName])
       updatetitle(c);
-      if (c == c->mon->sel)
-        drawbar(c->mon);
-    }
     if (ev->atom == netatom[NetWMWindowType])
       updatewindowtype(c);
   }
